@@ -1,7 +1,7 @@
 file(REMOVE_RECURSE
+  "CMakeFiles/c___part.dir/binding/py_bind.cpp.o"
+  "CMakeFiles/c___part.dir/binding/py_c_interface.cpp.o"
   "CMakeFiles/c___part.dir/main.cpp.o"
-  "CMakeFiles/c___part.dir/py_bind.cpp.o"
-  "CMakeFiles/c___part.dir/py_c_interface.cpp.o"
   "CMakeFiles/c___part.dir/sort/generate.cpp.o"
   "CMakeFiles/c___part.dir/sort/normal_sort.cpp.o"
   "c___part.cpython-37m-darwin.so"

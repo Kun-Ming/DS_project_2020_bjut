@@ -143,6 +143,60 @@ c___part/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/build
 .PHONY : c___part/fast
 
+binding/py_bind.o: binding/py_bind.cpp.o
+
+.PHONY : binding/py_bind.o
+
+# target to build an object file
+binding/py_bind.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/binding/py_bind.cpp.o
+.PHONY : binding/py_bind.cpp.o
+
+binding/py_bind.i: binding/py_bind.cpp.i
+
+.PHONY : binding/py_bind.i
+
+# target to preprocess a source file
+binding/py_bind.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/binding/py_bind.cpp.i
+.PHONY : binding/py_bind.cpp.i
+
+binding/py_bind.s: binding/py_bind.cpp.s
+
+.PHONY : binding/py_bind.s
+
+# target to generate assembly for a file
+binding/py_bind.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/binding/py_bind.cpp.s
+.PHONY : binding/py_bind.cpp.s
+
+binding/py_c_interface.o: binding/py_c_interface.cpp.o
+
+.PHONY : binding/py_c_interface.o
+
+# target to build an object file
+binding/py_c_interface.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/binding/py_c_interface.cpp.o
+.PHONY : binding/py_c_interface.cpp.o
+
+binding/py_c_interface.i: binding/py_c_interface.cpp.i
+
+.PHONY : binding/py_c_interface.i
+
+# target to preprocess a source file
+binding/py_c_interface.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/binding/py_c_interface.cpp.i
+.PHONY : binding/py_c_interface.cpp.i
+
+binding/py_c_interface.s: binding/py_c_interface.cpp.s
+
+.PHONY : binding/py_c_interface.s
+
+# target to generate assembly for a file
+binding/py_c_interface.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/binding/py_c_interface.cpp.s
+.PHONY : binding/py_c_interface.cpp.s
+
 main.o: main.cpp.o
 
 .PHONY : main.o
@@ -169,60 +223,6 @@ main.s: main.cpp.s
 main.cpp.s:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/main.cpp.s
 .PHONY : main.cpp.s
-
-py_bind.o: py_bind.cpp.o
-
-.PHONY : py_bind.o
-
-# target to build an object file
-py_bind.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/py_bind.cpp.o
-.PHONY : py_bind.cpp.o
-
-py_bind.i: py_bind.cpp.i
-
-.PHONY : py_bind.i
-
-# target to preprocess a source file
-py_bind.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/py_bind.cpp.i
-.PHONY : py_bind.cpp.i
-
-py_bind.s: py_bind.cpp.s
-
-.PHONY : py_bind.s
-
-# target to generate assembly for a file
-py_bind.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/py_bind.cpp.s
-.PHONY : py_bind.cpp.s
-
-py_c_interface.o: py_c_interface.cpp.o
-
-.PHONY : py_c_interface.o
-
-# target to build an object file
-py_c_interface.cpp.o:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/py_c_interface.cpp.o
-.PHONY : py_c_interface.cpp.o
-
-py_c_interface.i: py_c_interface.cpp.i
-
-.PHONY : py_c_interface.i
-
-# target to preprocess a source file
-py_c_interface.cpp.i:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/py_c_interface.cpp.i
-.PHONY : py_c_interface.cpp.i
-
-py_c_interface.s: py_c_interface.cpp.s
-
-.PHONY : py_c_interface.s
-
-# target to generate assembly for a file
-py_c_interface.cpp.s:
-	$(MAKE) $(MAKESILENT) -f CMakeFiles/c___part.dir/build.make CMakeFiles/c___part.dir/py_c_interface.cpp.s
-.PHONY : py_c_interface.cpp.s
 
 sort/generate.o: sort/generate.cpp.o
 
@@ -287,15 +287,15 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... c___part"
+	@echo "... binding/py_bind.o"
+	@echo "... binding/py_bind.i"
+	@echo "... binding/py_bind.s"
+	@echo "... binding/py_c_interface.o"
+	@echo "... binding/py_c_interface.i"
+	@echo "... binding/py_c_interface.s"
 	@echo "... main.o"
 	@echo "... main.i"
 	@echo "... main.s"
-	@echo "... py_bind.o"
-	@echo "... py_bind.i"
-	@echo "... py_bind.s"
-	@echo "... py_c_interface.o"
-	@echo "... py_c_interface.i"
-	@echo "... py_c_interface.s"
 	@echo "... sort/generate.o"
 	@echo "... sort/generate.i"
 	@echo "... sort/generate.s"
