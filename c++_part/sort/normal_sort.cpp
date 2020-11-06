@@ -109,6 +109,9 @@ void defer_course(schedulePtr & i, std::array<float, 9>& total_point){
 }
 
 schedulePtrVecType& check_point(schedulePtrVecType & course_schedule, float max){
+    /*
+     * :param max: default as 17.5
+     * */
     auto get_point =
             [&](const schedulePtr & i) -> float {
         return i->baseCourse? i->baseCourse->point : i->targetCourse->point;
@@ -131,6 +134,10 @@ schedulePtrVecType& check_point(schedulePtrVecType & course_schedule, float max)
 }
 
 std::vector<plain_schedule> plain_schedule::changeTo(const schedulePtrVecType& course_schedule){
+    /*
+     * Change cxx class to string vector and number vector
+     * for python part
+     * */
     std::vector<plain_schedule> plain_course_schedule;
 
     auto get_info =

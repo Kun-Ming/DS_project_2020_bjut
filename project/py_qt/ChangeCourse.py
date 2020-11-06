@@ -11,7 +11,7 @@ class SubWindow(QWidget):
 
         self.course_info = dict()
 
-        # create required course GroupBox
+        # Create required course GroupBox
         required_course = QGroupBox("必修")
         required_course.setFlat(False)
 
@@ -28,7 +28,7 @@ class SubWindow(QWidget):
         for i in range(0, len(self.checkBox)):
             cb = QComboBox(self)
             cb.addItem('')
-            for k in range(1, len(self.checkBox) + 1):
+            for k in range(1, 8):
                 cb.addItem(str(k))
             cb.currentIndexChanged.connect(self.get_info)
             self.cb.append(cb)
@@ -48,11 +48,11 @@ class SubWindow(QWidget):
 
         required_course.setLayout(self.required_layout)
 
-        # create optional course GroupBox
+        # Create optional course GroupBox
         optional_course = QGroupBox("选修")
         optional_course.setFlat(False)
 
-        # Course checkbox
+        # Optional course checkbox
         self.checkBox = []
         for i in required_course_name:
             if i[0] == '-':
@@ -60,7 +60,7 @@ class SubWindow(QWidget):
                 checkbox.stateChanged.connect(self.checkbox_func)
                 self.checkBox.append(checkbox)
 
-        # Course combobox
+        # Optional course combobox
         self.cb = []
         for i in range(0, len(self.checkBox)):
             cb = QComboBox(self)
@@ -96,6 +96,7 @@ class SubWindow(QWidget):
         self.setWindowTitle("高级排课选项")
 
     @Slot()
+    # Get info about order of course choose by user
     def get_info(self):
         cb = self.sender()
         if cb:

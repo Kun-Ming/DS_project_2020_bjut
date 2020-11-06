@@ -1,2 +1,5 @@
 *.doc
 *.xml
+*.bin
+*.pyc
+c++_part/cmake-build-debug/*
