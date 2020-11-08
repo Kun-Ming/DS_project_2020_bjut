@@ -24,10 +24,12 @@ int main() {
     courseNameVecType base = {"高等数学", "C", "金工实习"};
     coursePointVecType base_point = {5, 2.5, 2};
 
-    auto res = normal_sort_cxx(target, pre, target_point, base, base_point);
+//    auto res = normal_sort_cxx(target, pre, target_point, base, base_point);
 //    for (auto i : res){
 //        std::cout<<i.courseName<<"  "<<i.semester<<"  "<<i.point<<std::endl;
 //    }
+    auto res2 = normal_sort_schedule_cxx(target, pre, target_point, base, base_point);
+    auto res3 = pre2post_cxx(res2);
 
 
     return 0;
