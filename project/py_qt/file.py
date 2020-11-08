@@ -1,6 +1,9 @@
 import shutil
+from PySide2.QtWidgets import QMessageBox
+
+
 class read_course:
-	def read(self, path = '../data/course_private.txt'):
+	def read(self, path='../data/course_private.txt'):
 		self.target = []
 		self.target_point = []
 		self.base = []
@@ -12,13 +15,13 @@ class read_course:
 			for line in f:
 				if line == '\n':
 					continue
-				if line[0] != '\t':		# target course or base course
+				if line[0] != '\t':  # target course or base course
 					line = line.rstrip('\n')
 
-					if line[-1] == ':' or line[-1] == '：': 	# target course
+					if line[-1] == ':' or line[-1] == '：':  # target course
 						self.target.append(line.split(" ")[0])
 						self.target_point.append(float(line.split(" ")[1][:-1]))
-					else: 										# base course
+					else:  # base course
 						# print(line)
 						if len(line.split(" ")[1]) != []:
 							self.base.append(line.split(" ")[0])
@@ -26,7 +29,7 @@ class read_course:
 						else:
 							return [False, 'NO CREDIT IN COURSE:\n' + line.split(" ")[0]]
 
-				else: 				   # prerequisite course
+				else:  # prerequisite course
 					line = line[1:-1]
 					self.pre.append(line.split(" "))
 
@@ -39,27 +42,25 @@ class read_course:
 			return [False, 'WRONG in course ' + res + ': \nAPPEAR IN TARGET AND BASE']
 		if len([j for j in [i for i in [x for y in self.pre for x in y] if i not in self.base]
 				if j not in self.target]):  # compare pre to base and target
-			res = [j for j in [i for i in [x for y in self.pre for x in y] if i not in self.base] if j not in self.target]
+			res = [j for j in [i for i in [x for y in self.pre for x in y] if i not in self.base] if
+				   j not in self.target]
 			res = ' '.join([str(j) for j in res])
 			return [False, 'WRONG in course ' + res + ': \nNOT FOUND IN TARGET OR BASE COURSE']
 		else:
 			return [True, True]
 
-	def generate_cpp_class(self):
-		print('generating cpp class...')
-
 	def write(self, target, target_point, base, base_point, pre):
 		with open('../data/course_private.txt', 'a') as f:
 			if len(target):
 				f.write('\n')
-				string = target + ' ' + target_point+':\n'
+				string = target + ' ' + target_point + ':\n'
 				print(string)
 				f.write(string)
 				string = '\t' + ' '.join([str(j) for j in pre]) + '\n'
 				f.write(string)
 			if len(base):
 				f.write('\n')
-				string = base + ' ' + base_point+'\n'
+				string = base + ' ' + base_point + '\n'
 				f.write(string)
 
 	def del_target(self):
@@ -79,6 +80,19 @@ class read_course:
 			for s in lines:
 				f.write(s)
 
+
+def get_course_info():
+	file_reader = read_course()
+	if file_reader.read('../data/course_private.txt')[0]:
+		res = file_reader.target + file_reader.base
+		res_point = file_reader.target_point + file_reader.base_point
+		data = dict()
+		for i in range(0, len(res)):
+			data[str(res[i])] = [0, res_point[i]]
+		return data, file_reader.target, file_reader.target_point, \
+			   file_reader.base, file_reader.base_point, file_reader.pre
+
+
 if __name__ == "__main__":
 	reader = read_course()
-	# reader.del_base()
+# reader.del_base()

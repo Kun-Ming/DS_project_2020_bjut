@@ -1,1 +1,0 @@
-/Library/Developer/CommandLineTools/usr/bin/c++ -g -isysroot /Library/Developer/CommandLineTools/SDKs/MacOSX10.15.sdk -bundle -Wl,-headerpad_max_install_names -Xlinker -undefined -Xlinker dynamic_lookup -o example.cpython-37m-darwin.so CMakeFiles/example.dir/main.cpp.o CMakeFiles/example.dir/add.cpp.o 

@@ -8,7 +8,8 @@ from PySide2.QtWidgets import (QAction, QApplication, QHeaderView, QHBoxLayout, 
 
 import file
 import widget as widget
-import subwindow as sw
+import ChangeCourse
+import OptionalCourse
 import c___part
 
 
@@ -39,6 +40,11 @@ class MainWindow(QMainWindow):
         Save.setShortcut("Ctrl+S")
         Save.triggered.connect(self.saveDialog)
 
+        # Choose_course QAction
+        Choose_course = QAction("选修", self)
+        Choose_course.setShortcut("Ctrl+C")
+        Choose_course.triggered.connect(self.choose_course)
+
         # Normal_sort QAction
         Normal_sort = QAction("生成课表", self)
         Normal_sort.setShortcut("Ctrl+R")
@@ -47,16 +53,19 @@ class MainWindow(QMainWindow):
         # Advanced_sort QAction
         Advanced_sort = QAction("生成课表 高级选项", self)
         Advanced_sort.setShortcut("Ctrl+Shift+R")
-        Advanced_sort.triggered.connect(self.advaced_sort)
+        Advanced_sort.triggered.connect(self.advanced_sort)
 
-        # add menu
+        # Add menu
         self.file_menu.addAction(exit_action)
         self.file_menu.addAction(Import)
         self.file_menu.addAction(Save)
 
+        self.sort_menu.addAction(Choose_course)
         self.sort_menu.addAction(Normal_sort)
         self.sort_menu.addAction(Advanced_sort)
         self.setCentralWidget(widget)
+
+
 
     @Slot()
     def cpp_sort(self):
@@ -69,8 +78,8 @@ class MainWindow(QMainWindow):
             else:
                 target.append(i)
         res = c___part.interface1(target, reader.pre, reader.target_point,
-                                  reader.base, reader.base_point);
-        # print(res)
+                                  reader.base, reader.base_point)
+        # Sort table
         for course in res:
             item = self.widget.table.findItems(course, Qt.MatchExactly)
             self.widget.table.item(item[0].row(), 1).setText(str(res[course]))
@@ -83,6 +92,7 @@ class MainWindow(QMainWindow):
         QApplication.quit()
 
     @Slot()
+    # Dialog of importing course information
     def importDialog(self):
         fname = QFileDialog.getOpenFileName(self, "open file", "../", 'Text files (*.txt)')
         if fname[0]:
@@ -111,6 +121,7 @@ class MainWindow(QMainWindow):
             message.show()
 
     @Slot()
+    # Dialog of saving sorted course information
     def saveDialog(self):
         dir_path = QFileDialog.getExistingDirectory(self, "choose directory", "./")
         if dir_path[0]:
@@ -118,16 +129,68 @@ class MainWindow(QMainWindow):
         # some operation
         #save the schedule
 
-    @Slot()
-    def advaced_sort(self):
-        self.subwindow = sw.SubWindow(required_course_name=self.widget.data.keys())
-        self.subwindow.show()
-        self.subwindow.signal.connect(self.get_info)
+    def search(self, course_name, choose_course_info):
+        for i in choose_course_info:
+            if course_name == '-' + i:
+                return True
+        return False
 
     @Slot()
-    def get_info(self, info):
+    def advanced_sort(self):
+        a, target, target_point, base, base_point, pre = file.get_course_info()
+
+        for i in range(len(target)-1,-1,-1):
+            if target[i][0] == '-':
+                if not self.search(target[i], self.choose_course_info):
+                    target.remove(target[i])
+                    target_point.remove(target_point[i])
+                    pre.remove(pre[i])
+
+        for i in range(0, len(base)):
+            if base[i][0] == '-':
+                if not self.search(base[i], self.choose_course_info):
+                    base.remove(target[i])
+                    base_point.remove(target_point[i])
+
+        self.target = target
+        self.target_point = target_point
+        self.base = base
+        self.base_point = base_point
+        self.pre = pre
+
+        target = []
+        for i in self.target:
+            if i[0] == '-':
+                target.append(i[1:])
+            else:
+                target.append(i)
+
+        res = c___part.interface1(target, self.pre, self.target_point,
+                                  self.base, self.base_point)
+        self.subwindow = ChangeCourse.ChangeCourse(candidate_course=self.target + self.base,
+                                                   candidate_course_semester=res,
+                                                   all_candidate_course=target+self.base)
+        self.subwindow.show()
+        self.subwindow.change_course_signal.connect(self.advanced_sort_get_info)
+
+    @Slot()
+    def choose_course(self):
+        self.choose_course_window = OptionalCourse.OptionalCourse(file.get_course_info()[0])
+        self.choose_course_window.show()
+        self.choose_course_window.choose_course_signal.connect(self.choose_course_get_info)
+
+    @Slot()
+    def choose_course_get_info(self, info):
+        self.choose_course_info = info
+        print(self.choose_course_info)
+
+    @Slot()
+    def advanced_sort_get_info(self, info):
         self.ad_course_info = info
         print(self.ad_course_info)
+        self.widget.data = self.ad_course_info
+        self.widget.clear_table()
+        self.widget.fill_table()
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

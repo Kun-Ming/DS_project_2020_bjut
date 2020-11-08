@@ -1,27 +1,23 @@
 from PySide2.QtCore import Qt, Slot
 from PySide2.QtGui import QPainter
-from PySide2.QtWidgets import (QAction, QApplication, QHeaderView, QHBoxLayout, QLabel, QLineEdit,
-							   QMainWindow, QPushButton, QTableWidget, QTableWidgetItem,
-							   QVBoxLayout, QWidget, QFileDialog, QGroupBox, QCheckBox, QGridLayout,
-							   QComboBox, QMessageBox)
+from PySide2.QtWidgets import (QAction, QApplication, QHeaderView, QHBoxLayout, QLabel,
+							   QLineEdit, QPushButton, QTableWidget, QTableWidgetItem,
+							   QVBoxLayout, QWidget, QMessageBox)
 from PySide2.QtCharts import QtCharts
 
 import file
+
 
 class Widget(QWidget):
 	def __init__(self):
 		QWidget.__init__(self)
 		self.items = 0
 
-		# Example data
-
-
-		# Left
+		# Left of window
 		self.table = QTableWidget()
 		self.table.setColumnCount(3)
 		self.table.setHorizontalHeaderLabels(["课程名", "计划学期", "学分"])
 		self.table.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
-
 
 		self.table.setContextMenuPolicy(Qt.ActionsContextMenu)
 		send_option1 = QAction(self.table)
@@ -31,7 +27,6 @@ class Widget(QWidget):
 		send_option2.setText("删除")
 		self.table.addAction(send_option1)
 		self.table.addAction(send_option2)
-
 
 		# Chart
 		self.chart_view = QtCharts.QChartView()
@@ -67,7 +62,7 @@ class Widget(QWidget):
 		# QWidget Layout
 		self.layout = QHBoxLayout()
 
-		#self.table_view.setSizePolicy(size)
+		# self.table_view.setSizePolicy(size)
 		self.layout.addWidget(self.table)
 		self.layout.addLayout(self.right)
 
@@ -83,22 +78,26 @@ class Widget(QWidget):
 		self.Pre.textChanged[str].connect(self.check_disable)
 		self.Point.textChanged[str].connect(self.check_disable)
 
-		reader = file.read_course()
-		if reader.read('../data/course_private.txt')[0]:
-			res = reader.target + reader.base
-			res_point = reader.target_point + reader.base_point
-			data = dict()
-			for i in range(0, len(res)):
-				data[str(res[i])] = [0, res_point[i]]
-			self.data = data
-			self.clear_table()
-			self.fill_table()
+		# Fill table
+		self.data = file.get_course_info()[0]
+		self.clear_table()
+		self.fill_table()
 
-		else:
-			message = QMessageBox()
-			message.critical(self, 'Import error', reader.read('../data/course_private.txt')[1])
-			message.show()
-		# Fill data
+		# reader = file.read_course()
+		# if reader.read('../data/course_private.txt')[0]:
+		# 	res = reader.target + reader.base
+		# 	res_point = reader.target_point + reader.base_point
+		# 	data = dict()
+		# 	for i in range(0, len(res)):
+		# 		data[str(res[i])] = [0, res_point[i]]
+		# 	self.data = data
+		# 	self.clear_table()
+		# 	self.fill_table()
+		#
+		# else:
+		# 	message = QMessageBox()
+		# 	message.critical(self, 'Import error', reader.read('../data/course_private.txt')[1])
+		# 	message.show()
 
 	@Slot()
 	def add_element(self):
@@ -107,6 +106,7 @@ class Widget(QWidget):
 		Point = self.Point.text()
 		pre = pre.split(' ')
 
+		#write into file
 		writer = file.read_course()
 		if pre[0] != '':
 			writer.write(target=name, target_point=Point, base='', base_point='', pre=pre)
@@ -135,15 +135,15 @@ class Widget(QWidget):
 			message.show()
 
 			# delete wrong course
-			if pre: # target course
+			if pre:  # target course
 				reader.del_target()
 			else:
 				reader.del_base()
 
-
 	@Slot()
 	def check_disable(self, s):
-		if (self.CourseName.text() and self.Point.text()) or (self.Pre.text() and self.CourseName.text() and self.Point.text()):
+		if (self.CourseName.text() and self.Point.text()) or (
+				self.Pre.text() and self.CourseName.text() and self.Point.text()):
 			self.add.setEnabled(True)
 		else:
 			self.add.setEnabled(False)
@@ -158,10 +158,10 @@ class Widget(QWidget):
 				number[str(self.table.item(i, 1).text())] = \
 					number[str(self.table.item(i, 1).text())] + float(self.table.item(i, 2).text())
 			else:
-				number[str(self.table.item(i, 1).text())] =  float(self.table.item(i, 2).text())
+				number[str(self.table.item(i, 1).text())] = float(self.table.item(i, 2).text())
 		for i in number:
-				text = "第" + str(i) + "学期"
-				series.append(text, number[str(i)])
+			text = "第" + str(i) + "学期"
+			series.append(text, number[str(i)])
 
 		chart = QtCharts.QChart()
 		chart.addSeries(series)
@@ -186,7 +186,6 @@ class Widget(QWidget):
 
 			semester_item.setTextAlignment(Qt.AlignCenter)
 			point_item.setTextAlignment(Qt.AlignCenter)
-
 
 			self.table.insertRow(self.items)
 			self.table.setItem(self.items, 0, course_item)

@@ -4,10 +4,11 @@ from PySide2.QtWidgets import (QApplication, QLabel, QPushButton, QVBoxLayout, Q
 import sys
 
 
-class SubWindow(QWidget):
-    signal = Signal(dict)
-    def __init__(self, required_course_name, parent=None):
-        super(SubWindow, self).__init__(parent)
+class ChangeCourse(QWidget):
+    change_course_signal = Signal(dict)
+
+    def __init__(self, candidate_course, all_candidate_course, candidate_course_semester, parent=None):
+        super(ChangeCourse, self).__init__(parent)
 
         self.course_info = dict()
 
@@ -17,18 +18,19 @@ class SubWindow(QWidget):
 
         # Course Label
         self.checkBox = []
-        for i in required_course_name:
+        for i in candidate_course:
             if i[0] != '-':
                 self.course_info[i] = ''
                 label = QLabel(i)
                 self.checkBox.append(label)
 
-        #Course combobox
+        # Course combobox
         self.cb = []
-        for i in range(0, len(self.checkBox)):
+        for i in range(0, len(candidate_course)-1):
             cb = QComboBox(self)
-            cb.addItem('')
-            for k in range(1, 8):
+            # cb.addItem('')
+            for k in range(candidate_course_semester[all_candidate_course[i]], 8):
+                self.course_info[all_candidate_course[i]] = candidate_course_semester[all_candidate_course[i]]
                 cb.addItem(str(k))
             cb.currentIndexChanged.connect(self.get_info)
             self.cb.append(cb)
@@ -54,7 +56,7 @@ class SubWindow(QWidget):
 
         # Optional course checkbox
         self.checkBox = []
-        for i in required_course_name:
+        for i in candidate_course:
             if i[0] == '-':
                 checkbox = QCheckBox(i[1:])
                 checkbox.stateChanged.connect(self.checkbox_func)
@@ -64,8 +66,9 @@ class SubWindow(QWidget):
         self.cb = []
         for i in range(0, len(self.checkBox)):
             cb = QComboBox(self)
-            cb.addItem('')
-            for k in range(1, len(self.checkBox) + 1):
+            # cb.addItem('')
+            for k in range(candidate_course_semester[self.checkBox[i].text()], 8):
+                self.course_info[self.checkBox[i].text()] = candidate_course_semester[self.checkBox[i].text()]
                 cb.addItem(str(k))
             cb.currentIndexChanged.connect(self.get_info)
             self.cb.append(cb)
@@ -128,12 +131,12 @@ class SubWindow(QWidget):
     @Slot()
     def return_info(self):
         self.close()
-        self.signal.emit(self.course_info)
+        self.change_course_signal.emit(self.course_info)
 
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    window = SubWindow(['a','b','c'])
+    window = ChangeCourse(['a','b','c'])
     window.show()
     sys.exit(app.exec_())
