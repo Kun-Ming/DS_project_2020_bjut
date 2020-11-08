@@ -6,48 +6,65 @@
 #include "normal_sort.h"
 size_t semester = 8;
 
-schedulePtrVecType normal_sort_re(targetCoursePtr target_this,
-                                  schedulePtr targetPostPtr,
-                                  schedulePtrVecType all_courseSchedule){
+schedulePtrVecType normal_sort_re(coursePtr& target_this,
+                                  schedulePtr& targetPostPtr,
+                                  schedulePtrVecType& all_courseSchedule,
+                                  schedulePtrVecType& baseCourseSchedule){
     schedulePtrVecType courseSchedule;
     auto thisTarget_SchedulePtr = std::make_shared<schedule>(target_this,
-                                                             nullptr,
                                                              0,
                                                              targetPostPtr);
-
-
     // if target has target in pre
-    if (!target_this->pre.empty()){
-        for (auto& i : target_this->pre){
-            if (!i->study_type){
+    // v2: Check if has pre
+//    if (!target_this->pre.empty()){
+    for (auto& i : target_this->pre){
+        // Dealing with target in pre
+        if (!i->study_type && !i->pre.empty()){
 
-                // find target in pre
-                auto var = normal_sort_re(i, thisTarget_SchedulePtr, all_courseSchedule);
+            // find target in pre
+            auto var = normal_sort_re(i, thisTarget_SchedulePtr, all_courseSchedule, baseCourseSchedule);
 
-                // insert target in pre
-                courseSchedule.insert(courseSchedule.end(), var.begin(), var.end());
+            // insert target in pre
+            courseSchedule.insert(courseSchedule.end(), var.begin(), var.end());
 
-                thisTarget_SchedulePtr->semester = var.back()->semester + 1 > thisTarget_SchedulePtr->semester?
-                                                   var.back()->semester + 1: thisTarget_SchedulePtr->semester;
+            // When this target has more than 1 target pre, find the biggest semester
+            thisTarget_SchedulePtr->semester =var.back()->semester + 1 > thisTarget_SchedulePtr->semester?
+                                              var.back()->semester + 1: thisTarget_SchedulePtr->semester;
 
-                i->study_type = true;
+//            courseSchedule.push_back(thisTarget_SchedulePtr);
+            i->study_type = true;
+        }
+        // Dealing with base in pre
+        else {
+            if (!target_this->study_type) {
+                thisTarget_SchedulePtr->semester = 2;
+//                courseSchedule.push_back(thisTarget_SchedulePtr);
+
+                for(auto& base : baseCourseSchedule){
+                    if (i->name == base->course->name)
+                        base->postCourse.push_back(thisTarget_SchedulePtr);
+                }
             }
         }
-//        schedule_base();
-        courseSchedule.push_back(thisTarget_SchedulePtr);
+
     }
+    courseSchedule.push_back(thisTarget_SchedulePtr);
+//    }
     // target only has base in pre
-    else{
-            thisTarget_SchedulePtr->semester = 2;
-            courseSchedule.push_back(thisTarget_SchedulePtr);
-        }
-//    size_t max_semester_in_pre = findTargetInAll_func(target_this);
-//    thisTarget_SchedulePtr->semester = max_semester_in_pre + 1;
+//    else{
+//        if (!target_this->study_type){
+//            thisTarget_SchedulePtr->semester = 2;
+//            courseSchedule.push_back(thisTarget_SchedulePtr);
+//            target_this->study_type = true;
+//        }
+//    }
+    target_this->study_type = true;
     return courseSchedule;
 }
 
-schedulePtrVecType normal_sort(std::vector<targetCoursePtr>& targetCoursePtrVec, std::vector<coursePtr>& baseCoursePtrVec){
+schedulePtrVecType normal_sort(std::vector<coursePtr>& targetCoursePtrVec, std::vector<coursePtr>& baseCoursePtrVec){
     schedulePtrVecType courseSchedule;
+    schedulePtrVecType baseCourseSchedule;
 
     // lambda function, re assign semester number to each course
     auto re_number =
@@ -64,37 +81,42 @@ schedulePtrVecType normal_sort(std::vector<targetCoursePtr>& targetCoursePtrVec,
     // for those pure base course
     for (auto& i : baseCoursePtrVec){
         if(!i->study_type){
-            courseSchedule.push_back(std::make_shared<schedule>(nullptr, i, 1, nullptr));
+//            courseSchedule.push_back(std::make_shared<schedule>(i, 1));
+            baseCourseSchedule.push_back(std::make_shared<schedule>(i, 1));
             i->study_type = true;
         }
     }
+    courseSchedule.insert(courseSchedule.begin(), baseCourseSchedule.begin(), baseCourseSchedule.end());
 
     // for target course
     for (auto& thisTargetPtr : targetCoursePtrVec){
         // semester will re assigned in normal_sort_re
-        auto thisTarget_schedulePtr = std::make_shared<schedule>(thisTargetPtr, nullptr, 0, nullptr);
+        auto thisTarget_schedulePtr = std::make_shared<schedule>(thisTargetPtr, 0);
 
         // target has target in pre
-        if (!thisTargetPtr->pre.empty()){
-
+        // v2: Check if target has pre
+//        if (!thisTargetPtr->pre.empty()){
+        assert(thisTargetPtr->pre.size() != 0);
             // this target didn't studied
-            if(!thisTargetPtr->study_type){
-                auto var = normal_sort_re(thisTargetPtr, nullptr, courseSchedule); // 应在normal_sort_re中处理
-                courseSchedule.insert(courseSchedule.end(), var.begin(), var.end());
-                thisTargetPtr->study_type = true;
-            }
+        if(!thisTargetPtr->study_type){
+            auto a = std::shared_ptr<schedule>(nullptr);
+            auto var = normal_sort_re(thisTargetPtr, a, courseSchedule, baseCourseSchedule);
+            courseSchedule.insert(courseSchedule.end(), var.begin(), var.end());
+            thisTargetPtr->study_type = true;
         }
+//        }
         // when target has base and target, base will dealing in normal_sort_re
-        // target has pure base in pre
-        else{
-            // append this course if not studied
-            if (!thisTargetPtr->study_type){
-                thisTarget_schedulePtr->semester = 2;
-                courseSchedule.push_back(thisTarget_schedulePtr);
-                thisTargetPtr->study_type = true;
-            }
 
-        }
+        // target has pure base in pre
+        // In v2, target has pure base assigned in normal_sort_re
+//        else{
+//            // append this course if not studied
+//            if (!thisTargetPtr->study_type){
+//                thisTarget_schedulePtr->semester = 2;
+//                courseSchedule.push_back(thisTarget_schedulePtr);
+//                thisTargetPtr->study_type = true;
+//            }
+//        }
     }
 
     re_number(courseSchedule);
@@ -114,7 +136,7 @@ schedulePtrVecType& check_point(schedulePtrVecType & course_schedule, float max)
      * */
     auto get_point =
             [&](const schedulePtr & i) -> float {
-        return i->baseCourse? i->baseCourse->point : i->targetCourse->point;
+        return i->course->point;
 
     };
 
@@ -142,9 +164,7 @@ std::vector<plain_schedule> plain_schedule::changeTo(const schedulePtrVecType& c
 
     auto get_info =
             [](const schedulePtr & i) -> plain_schedule{
-                return plain_schedule{i->baseCourse? i->baseCourse->name : i->targetCourse->name,
-                                      i->baseCourse? i->baseCourse->point : i->targetCourse->point,
-                                      i->semester};
+                return plain_schedule{i->course->name, i->course->point, i->semester};
             };
     for (const auto& i : course_schedule)
         plain_course_schedule.push_back(get_info(i));

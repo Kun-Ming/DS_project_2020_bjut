@@ -7,6 +7,6 @@
 #include "../sort/normal_sort.h"
 #include <map>
 
-std::map<std::string, size_t> interface1(courseVecType target, preVecType pre, coursePointVecType target_point,
-                               courseVecType base, coursePointVecType base_point);
+std::map<std::string, size_t> normal_sort_cxx(courseNameVecType target, preNameVecType pre, coursePointVecType target_point,
+                                         courseNameVecType base, coursePointVecType base_point);
 #endif //C___PART_PY_C_INTERFACE_H

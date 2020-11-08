@@ -9,6 +9,6 @@ namespace py = pybind11;
 
 PYBIND11_MODULE(c___part, m){
     m.doc() = "interface between window and sort";
-    m.def("interface1", &interface1, "using c++ to sort");
+    m.def("normal_sort_cxx", &normal_sort_cxx, "using c++ to sort");
 }
 

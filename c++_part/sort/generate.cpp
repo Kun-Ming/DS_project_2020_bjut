@@ -3,25 +3,26 @@
 //
 #include "generate.h"
 #include "../course/target_course.h"
-#include "../course/course.h"
+//#include "../course/course.h"
 
 struct find_type{
     std::string type;
     int index;
 };
 
-targetCoursePtr generate_target(courseVecType& target,
+coursePtr generate_target(courseNameVecType& target,
                                 coursePointVecType& target_point,
-                                preVecType& pre,
+                                preNameVecType& pre,
                                 std::string target_this,
                                 float target_point_this,
                                 std::vector<std::string> pre_this,
                                 std::vector<coursePtr>& all_base_course,
-                                std::vector<targetCoursePtr>& all_target_course,
+                                std::vector<coursePtr>& all_target_course,
                                 const int& index)
 {
-    std::vector<targetCoursePtr> target_vector; std::vector<coursePtr> base_vector;
-    auto targetCourse = std::make_shared<target_course>(target_this, target_point_this);
+//    std::vector<targetCoursePtr> target_vector; std::vector<coursePtr> base_vector;
+    std::vector<coursePtr> pre_vector;
+    auto targetCourse = std::make_shared<course>(target_this, target_point_this);
     target.erase(target.begin() + index); target_point.erase(target_point.begin() + index); pre.erase(pre.begin() + index);
 
     for (auto prior = 0; prior != pre_this.size(); prior++){
@@ -29,7 +30,7 @@ targetCoursePtr generate_target(courseVecType& target,
         auto find =
                 [&] () -> find_type {
                     for (auto i = 0; i < all_base_course.size(); i++){
-                        if (all_base_course[i]->get_name() == pre_this[prior])
+                        if (all_base_course[i]->name == pre_this[prior])
                             return find_type{"base", i};
                     }
                     for (auto i = 0; i < target.size(); i++){
@@ -42,7 +43,7 @@ targetCoursePtr generate_target(courseVecType& target,
         auto res = find();
         // has a base in pre
         if (res.type == "base"){
-            base_vector.push_back(all_base_course[res.index]);
+            pre_vector.push_back(all_base_course[res.index]);
         }
 
         // has a target in pre or the last one, res returns NOTFOUND
@@ -60,25 +61,26 @@ targetCoursePtr generate_target(courseVecType& target,
 
             //has generated
             if (res2.type == "FIND"){
-                target_vector.push_back(all_target_course[res2.index]);
+                pre_vector.push_back(all_target_course[res2.index]);
                 all_target_course.erase(all_target_course.begin() + res2.index);
             }
             else{
-                target_vector.push_back(generate_target(target, target_point, pre, target[res.index], target_point[res.index],
+                pre_vector.push_back(generate_target(target, target_point, pre, target[res.index], target_point[res.index],
                                                         pre[res.index], all_base_course, all_target_course, res.index));
             }
         }
     }
-    targetCourse->pre_base = base_vector; targetCourse->pre = target_vector;
+//    targetCourse->pre_base = base_vector;
+    targetCourse->pre = pre_vector;
     return targetCourse;
 }
 
 
-std::vector<targetCoursePtr> generateDAG(courseVecType& target,
+std::vector<coursePtr> generateDAG(courseNameVecType& target,
                                          coursePointVecType& target_point,
-                                         courseVecType& base,
+                                         courseNameVecType& base,
                                          coursePointVecType& base_point,
-                                         preVecType& pre,
+                                         preNameVecType& pre,
                                          std::vector<coursePtr>& all_base_course)
 {
     assert(target.size() == target_point.size());
@@ -89,14 +91,14 @@ std::vector<targetCoursePtr> generateDAG(courseVecType& target,
         all_base_course.push_back(std::make_shared<course>(base[i], base_point[i]));
     }
 
-    std::vector<targetCoursePtr> all_target_course;
+    std::vector<coursePtr> all_target_course;
     auto i = 0;
     auto target_size = target.size();
     while (target.size()){
         auto target_this = target[0];
         auto target_point_this = target_point[0];
         auto pre_this = pre[0];
-        std::vector<targetCoursePtr> pre_course_this;
+        std::vector<coursePtr> pre_course_this;
 
         all_target_course.push_back(generate_target(target, target_point, pre, target_this, target_point_this,
                         pre_this, all_base_course, all_target_course, 0));

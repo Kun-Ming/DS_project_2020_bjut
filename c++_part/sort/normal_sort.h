@@ -10,13 +10,19 @@
 #include "generate.h"
 
 struct schedule{
-    targetCoursePtr targetCourse;
-    coursePtr baseCourse;
+    coursePtr course;
     std::size_t semester;
     std::vector<std::shared_ptr<schedule>> postCourse;
 
-    schedule(targetCoursePtr a, coursePtr b, size_t c, std::shared_ptr<schedule> d) :
-            targetCourse(a), baseCourse(b), semester(c) {postCourse.push_back(d);}
+    explicit schedule(coursePtr& a, size_t c, std::shared_ptr<schedule>& d) :
+    // Parameter a can be target course or base course
+    course(a), semester(c) {
+        if(d)
+            postCourse.push_back(d);
+    }
+
+    explicit schedule(coursePtr& a, size_t b) :
+    course(a), semester(b) {}
 };
 using schedulePtr = std::shared_ptr<schedule>;
 using scheduleVecType = std::vector<schedule>;
@@ -37,8 +43,11 @@ using plainScheduleVecType = std::vector<plain_schedule>;
 
 
 
-schedulePtrVecType normal_sort(std::vector<targetCoursePtr>& targetCoursePtrVec, std::vector<coursePtr>& baseCoursePtrVec);
+schedulePtrVecType normal_sort(std::vector<coursePtr>& targetCoursePtrVec, std::vector<coursePtr>& baseCoursePtrVec);
 schedulePtrVecType& check_point(schedulePtrVecType& course_schedule, float max = 17.5);
-schedulePtrVecType normal_sort_re(targetCoursePtr target_this, schedulePtr targetPostPtr, schedulePtrVecType all_courseSchedule);
+schedulePtrVecType normal_sort_re(coursePtr& target_this,
+                                  schedulePtr& targetPostPtr,
+                                  schedulePtrVecType& all_courseSchedule,
+                                  schedulePtrVecType& baseCourseSchedule);
 
 #endif //C___PART_NORMAL_SORT_H

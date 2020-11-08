@@ -7,27 +7,26 @@
 
 #include <vector>
 #include "../course/target_course.h"
-using courseVecType =  std::vector<std::string>;
+using courseNameVecType =  std::vector<std::string>;
 using coursePointVecType = std::vector<float>;
-using preVecType = std::vector<std::vector<std::string>> ;
-using targetCoursePtr = std::shared_ptr<target_course> ;
+using preNameVecType = std::vector<std::vector<std::string>> ;
 using coursePtr = std::shared_ptr<course> ;
 
 
-std::vector<targetCoursePtr> generateDAG(courseVecType& target,
+std::vector<coursePtr> generateDAG(courseNameVecType& target,
                                          coursePointVecType& target_point,
-                                         courseVecType& base,
+                                         courseNameVecType& base,
                                          coursePointVecType& base_point,
-                                         preVecType& pre,
+                                         preNameVecType& pre,
                                          std::vector<coursePtr>& all_base_course);
-targetCoursePtr generate_target(courseVecType& target,
+coursePtr generate_target(courseNameVecType& target,
                                 coursePointVecType& target_point,
-                                preVecType& pre,
+                                preNameVecType& pre,
                                 std::string target_this,
                                 float target_point_this,
                                 std::vector<std::string> pre_this,
                                 std::vector<coursePtr>& all_base_course,
-                                std::vector<targetCoursePtr>& all_target_course,
+                                std::vector<coursePtr>& all_target_course,
                                 const int& index);
 
 

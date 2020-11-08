@@ -1,5 +1,0 @@
-/Applications/CLion.app/Contents/bin/cmake/mac/bin/cmake -DCMAKE_BUILD_TYPE=Debug -G "CodeBlocks - Unix Makefiles" /Users/shikunming/Desktop/junior/data_structure_project/c++_part
--- pybind11 v2.6.0 
--- Configuring done
--- Generating done
--- Build files have been written to: /Users/shikunming/Desktop/junior/data_structure_project/c++_part/cmake-build-debug

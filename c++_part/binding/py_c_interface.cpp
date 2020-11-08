@@ -5,8 +5,8 @@
 #include "py_c_interface.h"
 #include <iostream>
 #include <map>
-std::map<std::string, size_t> interface1(courseVecType target, preVecType pre, coursePointVecType target_point,
-                               courseVecType base, coursePointVecType base_point){
+std::map<std::string, size_t> normal_sort_cxx(courseNameVecType target, preNameVecType pre, coursePointVecType target_point,
+                                         courseNameVecType base, coursePointVecType base_point){
     std::vector<coursePtr> all_base_course;
     auto a = generateDAG( target, target_point, base, base_point, pre, all_base_course);
     auto b = normal_sort(a, all_base_course);

@@ -7,23 +7,22 @@
 
 #include <utility>
 #include <vector>
-#include "course.h"
+#include <string>
+//#include "course.h"
 
-class target_course : course {
+class course { //: public course {
 public:
     std::string name;
     float point;
-    std::vector<std::shared_ptr<target_course>> pre;
-    std::vector<std::shared_ptr<course>> pre_base;
+    std::vector<std::shared_ptr<course>> pre;
     bool study_type;
 
-    target_course(std::string s, float point, std::vector<std::shared_ptr<target_course>>& pre,
-                  std::vector<std::shared_ptr<course>>& pre_base):
-            name(std::move(s)), point(point), pre(pre), pre_base(pre_base), study_type(false) {}
+    explicit course(std::string s, float point, std::vector<std::shared_ptr<course>>& pre):
+            name(std::move(s)), point(point), pre(pre), study_type(false) {}
 
-    explicit target_course(std::string s, float point) : name(std::move(s)), point(point), study_type(false) {}
+    explicit course(std::string s, float point) : name(std::move(s)), point(point), pre(0), study_type(false) {}
 
-    bool operator ==(const target_course& a){
+    bool operator ==(const course& a){
         if (a.name == this->name)
             return true;
         else

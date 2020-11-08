@@ -1,5 +1,0 @@
-/Users/shikunming/Desktop/junior/data_structure_project/c++_part/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/Users/shikunming/Desktop/junior/data_structure_project/c++_part/cmake-build-debug/CMakeFiles/edit_cache.dir
-/Users/shikunming/Desktop/junior/data_structure_project/c++_part/cmake-build-debug/CMakeFiles/c___part.dir
-/Users/shikunming/Desktop/junior/data_structure_project/c++_part/cmake-build-debug/pybind11/CMakeFiles/rebuild_cache.dir
-/Users/shikunming/Desktop/junior/data_structure_project/c++_part/cmake-build-debug/pybind11/CMakeFiles/edit_cache.dir
