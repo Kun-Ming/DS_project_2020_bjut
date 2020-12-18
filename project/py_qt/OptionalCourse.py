@@ -7,10 +7,11 @@ import sys
 class OptionalCourse(QWidget):
 	choose_course_signal = Signal(dict)
 
-	def __init__(self, all_course_info, parent=None):
+	def __init__(self, all_course_info, choose_info, parent=None):
 		super(OptionalCourse, self).__init__(parent)
 
 		self.course_info = []
+
 
 		# Create optional course GroupBox
 		optional_course = QGroupBox("选修")
@@ -44,6 +45,11 @@ class OptionalCourse(QWidget):
 		mainLayout.addWidget(optional_course)
 		mainLayout.addWidget(button)
 
+		for i in choose_info:
+			for j in self.checkBox:
+				if i == j.text():
+					j.setChecked(True)
+
 		self.setLayout(mainLayout)
 		self.setWindowTitle("选修课")
 
@@ -51,10 +57,12 @@ class OptionalCourse(QWidget):
 	@Slot()
 	def checkbox_func(self):
 		box = self.sender()
-
 		if box:
 			pos = list(self.optional_layout.getItemPosition(self.optional_layout.indexOf(box)))
-			self.course_info.append(self.optional_layout.itemAtPosition(pos[0], pos[1]).widget().text())
+			if self.optional_layout.itemAtPosition(pos[0], pos[1]).widget().isChecked():
+				self.course_info.append(self.optional_layout.itemAtPosition(pos[0], pos[1]).widget().text())
+			else:
+				self.course_info.remove(self.optional_layout.itemAtPosition(pos[0], pos[1]).widget().text())
 
 	@Slot()
 	def return_info(self):

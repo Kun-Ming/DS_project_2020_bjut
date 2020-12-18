@@ -11,8 +11,9 @@ import widget as widget
 import ChangeCourse
 import OptionalCourse
 import c___part
+import os
 
-
+os.environ['QT_MAC_WANTS_LAYER'] = '1'
 class MainWindow(QMainWindow):
     def __init__(self, widget):
         QMainWindow.__init__(self)
@@ -36,9 +37,9 @@ class MainWindow(QMainWindow):
         Import.triggered.connect(self.importDialog)
 
         # Save QAction
-        Save = QAction("保存课程表", self)
-        Save.setShortcut("Ctrl+S")
-        Save.triggered.connect(self.saveDialog)
+        # Save = QAction("保存课程表", self)
+        # Save.setShortcut("Ctrl+S")
+        # Save.triggered.connect(self.saveDialog)
 
         # Choose_course QAction
         Choose_course = QAction("选修", self)
@@ -58,14 +59,14 @@ class MainWindow(QMainWindow):
         # Add menu
         self.file_menu.addAction(exit_action)
         self.file_menu.addAction(Import)
-        self.file_menu.addAction(Save)
+        # self.file_menu.addAction(Save)
 
         self.sort_menu.addAction(Choose_course)
         self.sort_menu.addAction(Normal_sort)
         self.sort_menu.addAction(Advanced_sort)
         self.setCentralWidget(widget)
 
-
+        self.choose_course_info = []
 
     @Slot()
     def cpp_sort(self):
@@ -77,7 +78,7 @@ class MainWindow(QMainWindow):
                 target.append(i[1:])
             else:
                 target.append(i)
-        res = c___part.interface1(target, reader.pre, reader.target_point,
+        res = c___part.normal_sort_cxx(target, reader.pre, reader.target_point,
                                   reader.base, reader.base_point)
         # Sort table
         for course in res:
@@ -120,14 +121,14 @@ class MainWindow(QMainWindow):
             message.critical(self, 'Import error', reader.read(fname[0])[1])
             message.show()
 
-    @Slot()
-    # Dialog of saving sorted course information
-    def saveDialog(self):
-        dir_path = QFileDialog.getExistingDirectory(self, "choose directory", "./")
-        if dir_path[0]:
-            print(dir_path)
-        # some operation
-        #save the schedule
+    # @Slot()
+    # # Dialog of saving sorted course information
+    # def saveDialog(self):
+    #     dir_path = QFileDialog.getExistingDirectory(self, "choose directory", "./")
+    #     if dir_path[0]:
+    #         print(dir_path)
+    #     # some operation
+    #     #save the schedule
 
     def search(self, course_name, choose_course_info):
         for i in choose_course_info:
@@ -165,17 +166,20 @@ class MainWindow(QMainWindow):
             else:
                 target.append(i)
 
-        res = c___part.interface1(target, self.pre, self.target_point,
+        res = c___part.normal_sort_cxx(target, self.pre, self.target_point,
+                                  self.base, self.base_point)
+        pre2post = c___part.pre2post_cxx(target, self.pre, self.target_point,
                                   self.base, self.base_point)
         self.subwindow = ChangeCourse.ChangeCourse(candidate_course=self.target + self.base,
                                                    candidate_course_semester=res,
-                                                   all_candidate_course=target+self.base)
+                                                   all_candidate_course=target+self.base,
+                                                   pre2post=pre2post)
         self.subwindow.show()
         self.subwindow.change_course_signal.connect(self.advanced_sort_get_info)
 
     @Slot()
     def choose_course(self):
-        self.choose_course_window = OptionalCourse.OptionalCourse(file.get_course_info()[0])
+        self.choose_course_window = OptionalCourse.OptionalCourse(file.get_course_info()[0], self.choose_course_info)
         self.choose_course_window.show()
         self.choose_course_window.choose_course_signal.connect(self.choose_course_get_info)
 
@@ -187,10 +191,17 @@ class MainWindow(QMainWindow):
     @Slot()
     def advanced_sort_get_info(self, info):
         self.ad_course_info = info
-        print(self.ad_course_info)
-        self.widget.data = self.ad_course_info
-        self.widget.clear_table()
+        # print(self.ad_course_info)
         self.widget.fill_table()
+        for course in info:
+            item = self.widget.table.findItems(course, Qt.MatchExactly)
+            self.widget.table.item(item[0].row(), 1).setText(str(info[course]))
+
+        item = self.widget.table.findItems("0", Qt.MatchExactly)
+        for obj in item:
+            self.widget.table.removeRow(self.widget.table.indexFromItem(obj).row())
+
+        self.widget.table.sortItems(1, Qt.AscendingOrder)
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)

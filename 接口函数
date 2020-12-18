@@ -1,0 +1,22 @@
+std::map<std::string, size_t> normal_sort_cxx(std::vector<std::string> target, 
+                                              std::vector<std::vector<std::string>> pre, 
+                                              std::vector<float> target_point,
+                                              std::vector<std::string> base, 
+                                              std::vector<float> base_point);
+
+td::map<std::string, std::vector<std::string>> pre2post_cxx(std::vector<std::string> target, 
+                                                            std::vector<std::vector<std::string>> pre, 
+                                                            std::vector<float> target_point,
+                                                            std::vector<std::string> base, 
+                                                            std::vector<float> base_point);
+
+std::vector<std::shared_ptr<schedule>> normal_sort_schedule_cxx(std::vector<std::string> target, 
+                                                                std::vector<std::vector<std::string>> pre, 
+                                                                std::vector<float> target_point,
+                                                                std::vector<std::string> base, 
+                                                                std::vector<float> base_point);
+
+std::map<std::string, std::vector<std::string>> pre2post(std::vector<std::shared_ptr<schedule>> schedule);
+
+std::vector<std::string> pre2post_re(std::shared_ptr<schedule> thisTarget, 
+                                     std::vector<std::shared_ptr<schedule>> schedule);

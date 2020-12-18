@@ -19,20 +19,30 @@ schedulePtrVecType normal_sort_re(coursePtr& target_this,
 //    if (!target_this->pre.empty()){
     for (auto& i : target_this->pre){
         // Dealing with target in pre
-        if (!i->study_type && !i->pre.empty()){
+        if (!i->pre.empty()){
+            if(!i->study_type){
+                // find target in pre
+                auto var = normal_sort_re(i, thisTarget_SchedulePtr, all_courseSchedule, baseCourseSchedule);
 
-            // find target in pre
-            auto var = normal_sort_re(i, thisTarget_SchedulePtr, all_courseSchedule, baseCourseSchedule);
+                // insert target in pre
+                courseSchedule.insert(courseSchedule.end(), var.begin(), var.end());
 
-            // insert target in pre
-            courseSchedule.insert(courseSchedule.end(), var.begin(), var.end());
+                // When this target has more than 1 target pre, find the biggest semester
+                thisTarget_SchedulePtr->semester =var.back()->semester + 1 > thisTarget_SchedulePtr->semester?
+                                                  var.back()->semester + 1: thisTarget_SchedulePtr->semester;
 
-            // When this target has more than 1 target pre, find the biggest semester
-            thisTarget_SchedulePtr->semester =var.back()->semester + 1 > thisTarget_SchedulePtr->semester?
-                                              var.back()->semester + 1: thisTarget_SchedulePtr->semester;
-
-//            courseSchedule.push_back(thisTarget_SchedulePtr);
-            i->study_type = true;
+                i->study_type = true;
+            }
+            // Target in pre has studied
+            else{
+                for(auto j : all_courseSchedule){
+                    if(i->name == j->course->name){
+                        thisTarget_SchedulePtr->semester = j->semester + 1 > thisTarget_SchedulePtr->semester?
+                                                           j->semester + 1 : thisTarget_SchedulePtr->semester;
+                        break;
+                    }
+                }
+            }
         }
         // Dealing with base in pre
         else {

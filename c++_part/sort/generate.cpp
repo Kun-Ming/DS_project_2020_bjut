@@ -20,7 +20,6 @@ coursePtr generate_target(courseNameVecType& target,
                                 std::vector<coursePtr>& all_target_course,
                                 const int& index)
 {
-//    std::vector<targetCoursePtr> target_vector; std::vector<coursePtr> base_vector;
     std::vector<coursePtr> pre_vector;
     auto targetCourse = std::make_shared<course>(target_this, target_point_this);
     target.erase(target.begin() + index); target_point.erase(target_point.begin() + index); pre.erase(pre.begin() + index);
@@ -62,7 +61,7 @@ coursePtr generate_target(courseNameVecType& target,
             //has generated
             if (res2.type == "FIND"){
                 pre_vector.push_back(all_target_course[res2.index]);
-                all_target_course.erase(all_target_course.begin() + res2.index);
+//                all_target_course.erase(all_target_course.begin() + res2.index);
             }
             else{
                 pre_vector.push_back(generate_target(target, target_point, pre, target[res.index], target_point[res.index],

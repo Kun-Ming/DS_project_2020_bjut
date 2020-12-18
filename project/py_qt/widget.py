@@ -177,7 +177,7 @@ class Widget(QWidget):
 		for course, info in data.items():
 			course = course.replace('-', '')
 			course_item = QTableWidgetItem(course)
-			semester_item = QTableWidgetItem("{:d}".format(info[0]))
+			semester_item = QTableWidgetItem("{:d}".format(int(info[0])))
 			point_item = QTableWidgetItem("{:.1f}".format(info[1]))
 
 			course_item.setFlags(Qt.ItemIsSelectable | Qt.ItemIsEnabled)
